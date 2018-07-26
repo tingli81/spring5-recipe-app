@@ -1,48 +1,56 @@
 package guru.springframework.spring5recipeapp.models;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
-//makes object an entity with jpa
+//@Entity makes object an entity with jpa
 @Entity
 public class Recipe {
 
-    //create id
+    //@Id creates id
+    //@GeneratedValue specifies strategy to get the id from the database
     @Id
-    //specifies strategy to get the id from the database
     @GeneratedValue(strategy = GenerationType.IDENTITY  )
     private Long id;
 
     private String description;
+
     private Integer prepTime;
+
     private Integer cookTime;
+
     private Integer servings;
+
     private String source;
+
     private String url;
+
+    @Lob
     private String directions;
 
-    //todo add
-    //private Difficulty difficulty;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredients;
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     //large object storage
     @Lob
     private Byte[] image;
 
-    //one to one relationship with notes object, also specifies the ownership i.e. if we delete recipe then we delete notes
-    @OneToOne(cascade = CascadeType.ALL)
-    private Notes notes;
-
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
+
+    //one to one relationship with notes object, also specifies the ownership i.e. if
+    // we delete recipe then we delete notes
+    @OneToOne(cascade = CascadeType.ALL)
+    private Notes notes;
 
     @ManyToMany
     @JoinTable(name = "recipe_category",
             joinColumns = @JoinColumn(name = "recipe_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
+
+
 
     //getters and setters
     public Long getId() {
